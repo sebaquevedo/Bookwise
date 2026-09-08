@@ -114,6 +114,7 @@ export const EN: Record<string, string> = {
   'auth.login_error': 'Incorrect credentials. Please try again.',
   'auth.register_error': 'Error creating the account. Please try again.',
   'auth.register_check_email': 'Account created. Check your email to verify it.',
+  'auth.register_provisioning_failed': 'We could not complete your registration. Check your connection and try again.',
   'auth.login_verify_email': 'You must verify your email before logging in.',
   'auth.login.forgot': 'Forgot your password?',
 
@@ -171,6 +172,8 @@ export const EN: Record<string, string> = {
   'ui.rut': 'RUT',
   'ui.error': 'Error',
   'auth.switch_tenant_error': 'Could not switch business',
+  'auth.switch_tenant_forbidden': 'You do not have access to this business.',
+  'auth.switch_tenant_not_ready': 'This business is not ready yet. Try again.',
   'ui.today': 'Today',
   'ui.prev_month': 'Previous month',
   'ui.next_month': 'Next month',

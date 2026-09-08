@@ -9,6 +9,7 @@ import { LanguageService } from '@services/language.service';
 import { ReferenceStore } from '@core/stores/reference.store';
 import { Business } from '@models';
 import { UserAvatarComponent } from '../user-avatar/user-avatar.component';
+import { switchTenantErrorKey } from '@shared/utils/switch-tenant-error.util';
 
 /** Item del menú de cuenta. `logout` marca el cierre de sesión; si no, se navega a `route`. */
 interface AccountMenuItem {
@@ -104,7 +105,14 @@ export class AccountMenuComponent {
         this.refStore.loadProviders();
         this.messageService.add({ severity: 'success', summary: this.lang.t('biz.negocios'), detail: biz.name, key: 'global', life: 3500 });
       },
-      error: () => this.messageService.add({ severity: 'error', summary: this.lang.t('ui.error'), detail: this.lang.t('auth.switch_tenant_error'), key: 'global', life: 4000 }),
+      error: (err) =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.lang.t('ui.error'),
+          detail: this.lang.t(switchTenantErrorKey(err)),
+          key: 'global',
+          life: 4000,
+        }),
     });
     popover.hide();
   }

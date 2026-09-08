@@ -58,11 +58,13 @@ interface DashboardData {
   weekBookings: Booking[];
 }
 
-/** Params reactivos del rxResource — cambian con el rango de fechas seleccionado. */
+/** Params reactivos del rxResource — cambian con el rango de fechas seleccionado
+ *  y con el negocio activo (un switch de tenant re-ejecuta la carga). */
 interface DashboardRangeParams {
   start: string;
   end: string;
   anchor: string;
+  businessKey?: number | null;
 }
 
 interface LocationOption {
@@ -243,13 +245,16 @@ export class AdminDashboardComponent {
     return { start, end, anchor };
   });
 
-  /** Params para el rxResource (ISODate) */
+  /** Params para el rxResource (ISODate). `businessKey` engancha la carga al negocio
+   *  activo: al switchear de tenant, me() cambia → el computed se invalida y rxResource
+   *  recarga los charts con los datos del nuevo negocio. */
   readonly rangeParams = computed(() => {
     const { start, end, anchor } = this.rangeDetails();
     return {
       start: start.toISODate()!,
       end: end.toISODate()!,
       anchor: anchor.toISODate()!,
+      businessKey: this.auth.me()?.business?.id ?? this.auth.me()?.tenant_id ?? null,
     };
   });
 

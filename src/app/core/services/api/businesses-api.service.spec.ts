@@ -57,7 +57,7 @@ describe('BusinessesApiService', () => {
   });
 
   describe('createBusiness', () => {
-    it('POSTs data and returns the full { data: { business }, user } response', () => {
+    it('POSTs data and returns the flat { data: Business, message?, warnings? } response', () => {
       const payload: CreateBusinessData = {
         name: 'Kinesilk Centro',
         rut: '12.345.678-9',
@@ -67,8 +67,8 @@ describe('BusinessesApiService', () => {
         plan: 'professional',
       };
       const response: CreateBusinessResponse = {
-        data: { business },
-        user: { id: 7, email: 'admin@test.com', name: 'Admin', role: 'admin' },
+        data: business,
+        message: 'ok',
       };
 
       service.createBusiness(payload).subscribe((res) => {

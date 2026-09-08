@@ -49,6 +49,7 @@ describe('ProfileComponent', () => {
     user: ReturnType<typeof signal<User | null>>;
     userRole: () => UserRole | null;
     isAdmin: () => boolean;
+    isAdminGeneral: () => boolean;
     loadMe: ReturnType<typeof vi.fn>;
   };
   let api: { changePassword: ReturnType<typeof vi.fn>; updateProfile: ReturnType<typeof vi.fn> };
@@ -63,6 +64,7 @@ describe('ProfileComponent', () => {
       user: signal(makeUser() as User | null),
       userRole: () => auth.user()?.role ?? null,
       isAdmin: () => auth.user()?.role === 'admin',
+      isAdminGeneral: () => auth.me()?.is_admin_general ?? false,
       loadMe: vi.fn(),
     };
     api = { changePassword: vi.fn(), updateProfile: vi.fn() };
@@ -262,5 +264,19 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
 
     expect(component.userRoleLabel()).toBe('Profesional');
+  });
+
+  it('labels the member as Owner when the user is admin_general of the tenant', () => {
+    auth.me.set({ ...makeMe(business), is_admin_general: true } as AuthMeData | null);
+    fixture.detectChanges();
+
+    expect(component.memberRoleLabel()).toBe('Propietario');
+  });
+
+  it('labels the member as Administrator when not admin_general (e.g. admin_local)', () => {
+    auth.me.set({ ...makeMe(business), is_admin_general: false } as AuthMeData | null);
+    fixture.detectChanges();
+
+    expect(component.memberRoleLabel()).toBe('Administrador');
   });
 });

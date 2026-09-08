@@ -71,7 +71,8 @@ export class BusinessCreateComponent {
       next: (res) => {
         this.saving.set(false);
         this.created.set(true);
-        this.createdBusiness.set(res.data.business);
+        // Respuesta plana: { data: Business } (sin { business } anidado ni `user`).
+        this.createdBusiness.set(res.data);
         // Refresca /auth/me para que me().businesses incluya el nuevo negocio.
         this.auth.loadMe(true).subscribe();
         this.messageService.add({

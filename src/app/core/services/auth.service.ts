@@ -31,6 +31,13 @@ export class AuthService {
   /** Roles de NEGOCIO (multi-tenant) — expuestos por el backend en /auth/me. */
   readonly isAdminGeneral  = computed(() => this._me()?.is_admin_general ?? false);
   readonly isAdminLocal    = computed(() => this._me()?.is_admin_local ?? false);
+  /** True cuando el usuario debe completar onboarding: sin negocio o negocio pendiente
+   *  (name vacío). El backend crea el tenant en el registro, así que NO se usa
+   *  `onboarding_complete` (siempre true cuando hay tenant_id). */
+  readonly needsOnboarding = computed(() => {
+    const me = this._me();
+    return !me || !me.business || !(me.business.name?.trim());
+  });
 
   constructor(private router: Router) {}
 
@@ -86,7 +93,7 @@ export class AuthService {
     );
   }
 
-  /** Actualiza el caché de /auth/me (tras POST /businesses → onboarding_complete=true). */
+  /** Actualiza el caché de /auth/me (p. ej. tras switch-tenant o datos locales). */
   setMe(me: AuthMeData): void {
     this._me.set(me);
     this._meLoaded.set(true);

@@ -4,7 +4,17 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { AuthApiService } from './api/auth-api.service';
-import type { AuthMeData } from '@models';
+import type { AuthMeData, Business } from '@models';
+
+const business: Business = {
+  id: 1,
+  name: 'Kinesilk Centro',
+  rut: '11111111-1',
+  email: 'negocio@test.com',
+  address: 'Av. Providencia 123',
+  phone: '+56912345678',
+  plan: 'starter',
+};
 
 const me: AuthMeData = {
   id: 7,
@@ -66,6 +76,27 @@ describe('AuthService', () => {
       service.loadMe(true).subscribe();
 
       expect(authApi.getMe).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('needsOnboarding', () => {
+    it('is true when /auth/me is not loaded yet', () => {
+      expect(service.needsOnboarding()).toBe(true);
+    });
+
+    it('is true when there is no business (tenant pending without name)', () => {
+      service.setMe(me); // onboarding_complete=true, pero business null
+      expect(service.needsOnboarding()).toBe(true);
+    });
+
+    it('is true when the business name is blank', () => {
+      service.setMe({ ...me, business: { ...business, name: '   ' } });
+      expect(service.needsOnboarding()).toBe(true);
+    });
+
+    it('is false when the active business has a name', () => {
+      service.setMe({ ...me, business });
+      expect(service.needsOnboarding()).toBe(false);
     });
   });
 

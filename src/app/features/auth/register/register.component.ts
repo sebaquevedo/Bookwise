@@ -119,6 +119,14 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.loading.set(false);
+        // Falla de provisioning del tenant (500 o { error: 'provisioning_failed' }):
+        // la cuenta pudo quedar a medias → mensaje de reintento específico.
+        const isProvisioningFailure =
+          err?.status === 500 || err?.error?.error === 'provisioning_failed';
+        if (isProvisioningFailure) {
+          this.error.set(this.lang.t('auth.register_provisioning_failed'));
+          return;
+        }
         const apiErrors = err.error?.errors as Record<string, string[]> | undefined;
         const lang = this.lang.lang();
         const msg = apiErrors

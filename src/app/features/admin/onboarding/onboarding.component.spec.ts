@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { OnboardingComponent } from './onboarding.component';
 import { BusinessesApiService } from '@services/api/businesses-api.service';
 import { AuthService } from '@services/auth.service';
@@ -18,7 +18,7 @@ const business: Business = {
   plan: 'starter',
 };
 
-function meData(): AuthMeData {
+function meData(biz: Business | null): AuthMeData {
   return {
     id: 7,
     name: 'Admin',
@@ -27,8 +27,8 @@ function meData(): AuthMeData {
     role: 'admin',
     tenant_id: 1,
     email_verified_at: '2026-09-01T16:00:00Z',
-    onboarding_complete: false,
-    business: null,
+    onboarding_complete: true,
+    business: biz,
   };
 }
 
@@ -38,9 +38,9 @@ describe('OnboardingComponent', () => {
   let auth: {
     me: ReturnType<typeof signal<AuthMeData | null>>;
     meLoaded: ReturnType<typeof signal<boolean>>;
-    setMe: ReturnType<typeof vi.fn>;
-    setUser: ReturnType<typeof vi.fn>;
+    loadMe: ReturnType<typeof vi.fn>;
   };
+  let httpError: { handle: ReturnType<typeof vi.fn> };
   let fixture: ReturnType<typeof TestBed.createComponent<OnboardingComponent>>;
   let component: OnboardingComponent;
 
@@ -48,11 +48,11 @@ describe('OnboardingComponent', () => {
     businessesApi = { createBusiness: vi.fn() };
     router = { navigate: vi.fn() };
     auth = {
-      me: signal(meData()),
+      me: signal(meData(null)),
       meLoaded: signal(true),
-      setMe: vi.fn(),
-      setUser: vi.fn(),
+      loadMe: vi.fn(),
     };
+    httpError = { handle: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [OnboardingComponent],
@@ -61,7 +61,7 @@ describe('OnboardingComponent', () => {
         { provide: BusinessesApiService, useValue: businessesApi },
         { provide: AuthService, useValue: auth },
         { provide: Router, useValue: router },
-        { provide: HttpErrorService, useValue: { handle: vi.fn() } },
+        { provide: HttpErrorService, useValue: httpError },
       ],
     }).compileComponents();
 
@@ -78,10 +78,10 @@ describe('OnboardingComponent', () => {
     expect(businessesApi.createBusiness).not.toHaveBeenCalled();
   });
 
-  it('POSTs and navigates to /admin when the form is valid', () => {
-    businessesApi.createBusiness.mockReturnValue(
-      of({ data: { business }, user: { id: 7, email: 'admin@test.com', name: 'Admin', role: 'admin' } }),
-    );
+  it('POSTs, refreshes /auth/me and navigates to /admin when the form is valid', () => {
+    // Respuesta plana del backend: { data: Business } — sin `user` ni { business } anidado.
+    businessesApi.createBusiness.mockReturnValue(of({ data: business, message: 'ok' }));
+    auth.loadMe.mockReturnValue(of(meData(business)));
 
     component.formData = {
       name: 'Kinesilk Centro',
@@ -97,7 +97,31 @@ describe('OnboardingComponent', () => {
     formEl.dispatchEvent(new Event('submit'));
 
     expect(businessesApi.createBusiness).toHaveBeenCalledWith(component.formData);
-    expect(auth.setMe).toHaveBeenCalled();
+    // El caché de /auth/me se refresca contra el backend (force=true) antes de navegar,
+    // para que business.name quede poblado y needsOnboarding() sea false en el guard.
+    expect(auth.loadMe).toHaveBeenCalledWith(true);
     expect(router.navigate).toHaveBeenCalledWith(['/admin']);
+  });
+
+  it('stays on onboarding (fail-closed) when the /auth/me refresh fails after a 200 create', () => {
+    businessesApi.createBusiness.mockReturnValue(of({ data: business, message: 'ok' }));
+    auth.loadMe.mockReturnValue(throwError(() => ({ status: 500 })));
+
+    component.formData = {
+      name: 'Kinesilk Centro',
+      rut: '11111111-1',
+      email: 'negocio@test.com',
+      address: 'Av. Providencia 123',
+      phone: '+56912345678',
+      plan: 'starter',
+    };
+    fixture.detectChanges();
+
+    const formEl = fixture.nativeElement.querySelector('form');
+    formEl.dispatchEvent(new Event('submit'));
+
+    expect(businessesApi.createBusiness).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(httpError.handle).toHaveBeenCalled();
   });
 });

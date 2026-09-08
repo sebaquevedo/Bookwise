@@ -16,7 +16,8 @@ export class BusinessesApiService {
       .pipe(map((r) => r.data));
   }
 
-  /** POST /businesses (Bearer) → 201 { data: { business }, user } */
+  /** POST /businesses (Bearer) → 200 (completa el tenant pending) o 201 (tenant nuevo),
+   *  siempre { data: Business, message?, warnings? } — respuesta plana, sin `user`. */
   createBusiness(data: CreateBusinessData): Observable<CreateBusinessResponse> {
     return this.http.post<CreateBusinessResponse>(`${this.baseUrl}/businesses`, data);
   }

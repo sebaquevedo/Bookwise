@@ -66,15 +66,22 @@ export class OnboardingComponent {
 
     this.loading.set(true);
     this.businessesApi.createBusiness(this.formData).subscribe({
-      next: (res) => {
-        // Caché de /auth/me: marcar onboarding como completado para que el guard no redirija.
-        const current = this.auth.me();
-        if (current) {
-          this.auth.setMe({ ...current, business: res.data.business, onboarding_complete: true });
-        }
-        this.auth.setUser(res.user);
-        this.loading.set(false);
-        this.router.navigate(['/admin']);
+      next: () => {
+        // El backend completa el tenant y responde 200 { data: Business, message?, warnings? }
+        // (sin `user`). No usamos esa respuesta para el caché: refrescamos /auth/me real,
+        // que puebla business.name y hace que needsOnboarding() pase a false.
+        this.auth.loadMe(true).subscribe({
+          next: () => {
+            this.loading.set(false);
+            this.router.navigate(['/admin']);
+          },
+          error: (err) => {
+            // El negocio ya quedó creado, pero no pudimos confirmar el estado →
+            // nos quedamos en onboarding (fail-closed) con el toast de error.
+            this.loading.set(false);
+            this.httpError.handle(err, this.lang.t('onboard.submit'));
+          },
+        });
       },
       error: (err) => {
         this.loading.set(false);

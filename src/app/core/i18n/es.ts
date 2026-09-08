@@ -114,6 +114,7 @@ export const ES: Record<string, string> = {
   'auth.login_error': 'Credenciales incorrectas. Intentá de nuevo.',
   'auth.register_error': 'Error al crear la cuenta. Intentá de nuevo.',
   'auth.register_check_email': 'Cuenta creada. Revisá tu correo para verificar tu email.',
+  'auth.register_provisioning_failed': 'No se pudo completar el registro. Verifica tu conexión e inténtalo nuevamente.',
   'auth.login_verify_email': 'Debes verificar tu email antes de iniciar sesión.',
   'auth.login.forgot': '¿Olvidaste tu contraseña?',
 
@@ -171,6 +172,8 @@ export const ES: Record<string, string> = {
   'ui.rut': 'RUT',
   'ui.error': 'Error',
   'auth.switch_tenant_error': 'No se pudo cambiar de negocio',
+  'auth.switch_tenant_forbidden': 'No tienes acceso a este negocio.',
+  'auth.switch_tenant_not_ready': 'Este negocio aún no está listo. Inténtalo nuevamente.',
   'ui.today': 'Hoy',
   'ui.prev_month': 'Mes anterior',
   'ui.next_month': 'Mes siguiente',

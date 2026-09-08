@@ -18,6 +18,7 @@ import { Business, ChangePasswordData } from '@models';
 import { checkPasswordStrength, isPasswordStrong } from '@shared/validators/password-strength.validator';
 import { PhoneInputComponent } from '@shared/components/phone-input/phone-input.component';
 import { UserAvatarComponent } from '@shared/components/user-avatar/user-avatar.component';
+import { switchTenantErrorKey } from '@shared/utils/switch-tenant-error.util';
 
 @Component({
   selector: 'bw-profile',
@@ -88,9 +89,12 @@ export class ProfileComponent implements OnInit {
   readonly notifEmail = signal(true);
   readonly notifPush = signal(false);
 
-  /** Miembro como etiqueta de rol (para la lista de miembros). */
+  /** Etiqueta del miembro actual en la lista: owner = admin_general del tenant
+   *  (no el rol técnico de sesión, que en la transición aún separa layouts). */
   readonly memberRoleLabel = computed(() =>
-    this.auth.isAdmin() ? this.lang.t('biz.member.owner') : this.lang.t('biz.member.admin'),
+    this.auth.isAdminGeneral()
+      ? this.lang.t('biz.member.owner')
+      : this.lang.t('biz.member.admin'),
   );
 
   /** URL del logo del negocio, o null → el componente cae al monograma. */
@@ -142,7 +146,14 @@ export class ProfileComponent implements OnInit {
         this.refStore.loadProviders();
         this.messageService.add({ severity: 'success', summary: this.lang.t('biz.negocios'), detail: biz.name, key: 'global', life: 3500 });
       },
-      error: () => this.messageService.add({ severity: 'error', summary: this.lang.t('ui.error'), detail: this.lang.t('auth.switch_tenant_error'), key: 'global', life: 4000 }),
+      error: (err) =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.lang.t('ui.error'),
+          detail: this.lang.t(switchTenantErrorKey(err)),
+          key: 'global',
+          life: 4000,
+        }),
     });
   }
 

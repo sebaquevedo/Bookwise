@@ -9,6 +9,7 @@ import { LanguageService } from '@services/language.service';
 import { ReferenceStore } from '@core/stores/reference.store';
 import { Business } from '@models';
 import { UserAvatarComponent } from '@shared/components/user-avatar/user-avatar.component';
+import { switchTenantErrorKey } from '@shared/utils/switch-tenant-error.util';
 
 /**
  * Listado de negocios (gestión multi-tenant).
@@ -63,11 +64,11 @@ export class BusinessesListComponent {
           life: 3500,
         });
       },
-      error: () =>
+      error: (err) =>
         this.messageService.add({
           severity: 'error',
           summary: this.lang.t('ui.error'),
-          detail: this.lang.t('auth.switch_tenant_error'),
+          detail: this.lang.t(switchTenantErrorKey(err)),
           key: 'global',
           life: 4000,
         }),

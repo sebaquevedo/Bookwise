@@ -328,10 +328,13 @@ export interface CreateBusinessData {
   logo?: File | null;
 }
 
-/** POST /businesses → 201 { data: { business }, user } (user: me actualizado, onboarding_complete=true). */
+/** POST /businesses → 200 (completa el tenant pending) o 201 (crea tenant nuevo)
+ *  { data: Business, message?, warnings? }. `data` ES el Business (plano); la
+ *  respuesta ya NO incluye `user`. */
 export interface CreateBusinessResponse {
-  data: { business: Business };
-  user: User;
+  data: Business;
+  message?: string;
+  warnings?: string[];
 }
 
 // Paginación
