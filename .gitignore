@@ -57,3 +57,6 @@ src/env.ts
 CLAUDE.md
 # Local AI runtime state
 .atl/
+
+# CodeGraph local index
+.codegraph/

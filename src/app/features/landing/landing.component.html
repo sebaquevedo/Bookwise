@@ -123,10 +123,16 @@
     <p class="landing-business__sub">{{ lang.t('landing.business.subtitle') }}</p>
 
     <div class="landing-business__grid">
-      @for (biz of businessTypes; track biz) {
+      @for (biz of businessTypes; track biz.id) {
         <a class="landing-business__card" routerLink="/register">
-          <span class="landing-business__card-bg" aria-hidden="true"></span>
-          <span class="landing-business__card-label">{{ lang.t('landing.business.' + biz + '.title') }}</span>
+          <img
+            class="landing-business__card-img"
+            [src]="biz.img"
+            alt=""
+            loading="lazy"
+          />
+          <span class="landing-business__card-scrim" aria-hidden="true"></span>
+          <span class="landing-business__card-label">{{ lang.t('landing.business.' + biz.id + '.title') }}</span>
           <i class="pi pi-arrow-right landing-business__card-arrow"></i>
         </a>
       }

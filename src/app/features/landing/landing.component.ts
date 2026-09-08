@@ -34,7 +34,23 @@ export class LandingComponent {
     },
   ];
 
-  readonly businessTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  /** Categorías de negocio: id = clave i18n `landing.business.{id}.*`, img = foto de la card. */
+  readonly businessTypes = [
+    { id: 1, img: 'assets/images/landing_page/centro-estetica.jpg' },
+    { id: 2, img: 'assets/images/landing_page/spa.jpg' },
+    { id: 3, img: 'assets/images/landing_page/salon-belleza.jpg' },
+    { id: 4, img: 'assets/images/landing_page/manicure-pedicure.jpg' },
+    { id: 5, img: 'assets/images/landing_page/barberia.jpg' },
+    { id: 6, img: 'assets/images/landing_page/peluqueria.jpg' },
+    { id: 7, img: 'assets/images/landing_page/cejas-pestanas.jpg' },
+    { id: 8, img: 'assets/images/landing_page/salones-maquillaje.webp' },
+    { id: 9, img: 'assets/images/landing_page/medicina-alternativa.jpg' },
+    { id: 10, img: 'assets/images/landing_page/podologia.webp' },
+    { id: 11, img: 'assets/images/landing_page/fisioterapia-kinesiologia.jpg' },
+    { id: 12, img: 'assets/images/landing_page/psicologia.jpg' },
+    { id: 13, img: 'assets/images/landing_page/nutricion.jpg' },
+    { id: 14, img: 'assets/images/landing_page/clinicas.webp' },
+  ];
 
   readonly plans = [
     {

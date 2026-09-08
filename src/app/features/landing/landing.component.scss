@@ -625,9 +625,8 @@
   &__card {
     position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: 150px;
+    align-items: flex-end;
+    min-height: 170px;
     padding: 1.25rem;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -636,49 +635,54 @@
     text-decoration: none;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
-    &:nth-child(3n + 1) { --card-grad: linear-gradient(135deg, #1c3a7a 0%, #0b1f44 100%); }
-    &:nth-child(3n + 2) { --card-grad: linear-gradient(135deg, #14285c 0%, #0a1730 100%); }
-    &:nth-child(3n + 3) { --card-grad: linear-gradient(135deg, #24457e 0%, #0d2248 100%); }
-
     &:hover {
       text-decoration: none;
       transform: translateY(-3px);
       border-color: rgba(255, 255, 255, 0.25);
       box-shadow: 0 16px 34px -18px rgba(0, 0, 0, 0.6);
 
-      .landing-business__card-bg {
+      .landing-business__card-img {
         transform: scale(1.08);
       }
     }
   }
 
-  &__card-bg {
+  &__card-img {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background:
-      linear-gradient(180deg, transparent 42%, rgba(10, 26, 58, 0.92) 100%),
-      radial-gradient(80% 60% at 20% 10%, rgba(96, 167, 240, 0.22) 0%, transparent 70%),
-      var(--card-grad, linear-gradient(135deg, #1c3a7a 0%, #0b1f44 100%));
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     transition: transform 0.35s ease;
+  }
+
+  &__card-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(10, 26, 58, 0.05) 0%, rgba(10, 26, 58, 0.45) 55%, rgba(10, 26, 58, 0.88) 100%);
   }
 
   &__card-label {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     color: #fff;
     font-weight: 700;
     font-size: 1rem;
     line-height: 1.3;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 
   &__card-arrow {
     position: absolute;
     bottom: 1rem;
     right: 1rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    z-index: 1;
+    z-index: 2;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 }
 
