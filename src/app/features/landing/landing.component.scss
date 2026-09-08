@@ -206,40 +206,6 @@
     flex-wrap: wrap;
     margin-bottom: 2rem;
   }
-
-  &__trust {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-  }
-
-  &__avatars {
-    display: flex;
-  }
-
-  &__avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.75rem;
-    color: #fff;
-    margin-left: -10px;
-
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-
-  &__trust-text {
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--text-color-secondary);
-  }
 }
 
 // ── Mockup navegador ─────────────────────────────────────────────────────────
@@ -758,8 +724,7 @@
     margin: 0 auto 2rem;
   }
 
-  .landing-hero__ctas,
-  .landing-hero__trust {
+  .landing-hero__ctas {
     justify-content: center;
   }
 

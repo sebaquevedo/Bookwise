@@ -6,43 +6,49 @@
     </div>
 
     <form #onboardForm="ngForm" (ngSubmit)="onSubmit(onboardForm)" class="onboard-form">
-      <div class="field">
-        <label for="bizName">{{ lang.t('onboard.business_name') }}</label>
-        <input
-          pInputText
-          id="bizName" name="bizName"
-          type="text"
-          [(ngModel)]="formData.name"
-          required
-          #bizName="ngModel"
-          class="w-full" />
-        @if (bizName.invalid && bizName.touched) {
-          <span class="field-error">{{ lang.t('onboard.error.name_required') }}</span>
-        }
+      <!-- name + rut comparten fila en pantallas >= 480px para ganar alto vertical. -->
+      <div class="field-row">
+        <div class="field">
+          <input
+            pInputText
+            id="bizName" name="bizName"
+            type="text"
+            [placeholder]="lang.t('onboard.business_name')"
+            [attr.aria-label]="lang.t('onboard.business_name')"
+            [(ngModel)]="formData.name"
+            required
+            #bizName="ngModel"
+            class="w-full" />
+          @if (bizName.invalid && bizName.touched) {
+            <span class="field-error">{{ lang.t('onboard.error.name_required') }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <input
+            pInputText
+            id="bizRut" name="bizRut"
+            type="text"
+            bwRut
+            [placeholder]="lang.t('onboard.business_rut')"
+            [attr.aria-label]="lang.t('onboard.business_rut')"
+            [(ngModel)]="formData.rut"
+            required
+            #bizRut="ngModel"
+            class="w-full" />
+          @if (bizRut.invalid && bizRut.touched) {
+            <span class="field-error">{{ lang.t('onboard.error.rut_invalid') }}</span>
+          }
+        </div>
       </div>
 
       <div class="field">
-        <label for="bizRut">{{ lang.t('onboard.business_rut') }}</label>
-        <input
-          pInputText
-          id="bizRut" name="bizRut"
-          type="text"
-          bwRut
-          [(ngModel)]="formData.rut"
-          required
-          #bizRut="ngModel"
-          class="w-full" />
-        @if (bizRut.invalid && bizRut.touched) {
-          <span class="field-error">{{ lang.t('onboard.error.rut_invalid') }}</span>
-        }
-      </div>
-
-      <div class="field">
-        <label for="bizEmail">{{ lang.t('onboard.business_email') }}</label>
         <input
           pInputText
           id="bizEmail" name="bizEmail"
           type="email"
+          [placeholder]="lang.t('onboard.business_email')"
+          [attr.aria-label]="lang.t('onboard.business_email')"
           [(ngModel)]="formData.email"
           required
           email
@@ -60,11 +66,12 @@
       </div>
 
       <div class="field">
-        <label for="bizAddress">{{ lang.t('onboard.business_address') }}</label>
         <input
           pInputText
           id="bizAddress" name="bizAddress"
           type="text"
+          [placeholder]="lang.t('onboard.business_address')"
+          [attr.aria-label]="lang.t('onboard.business_address')"
           [(ngModel)]="formData.address"
           required
           #bizAddress="ngModel"
@@ -75,7 +82,6 @@
       </div>
 
       <div class="field">
-        <label>{{ lang.t('onboard.business_phone') }}</label>
         <bw-phone-input
           name="phone"
           [(ngModel)]="formData.phone"
@@ -94,16 +100,73 @@
       </div>
 
       <div class="field">
-        <label for="bizPlan">{{ lang.t('onboard.plan') }}</label>
         <p-select
           id="bizPlan" name="plan"
           [options]="planOptions"
           optionLabel="label"
           optionValue="value"
           [(ngModel)]="formData.plan"
+          [placeholder]="lang.t('onboard.plan')"
+          [attr.aria-label]="lang.t('onboard.plan')"
           required
           #plan="ngModel"
           class="w-full" />
+      </div>
+
+      <div class="field">
+        <p-select
+          id="bizBusinessType" name="businessType"
+          [options]="businessTypeOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="formData.business_type"
+          [placeholder]="lang.t('onboard.business_type.placeholder')"
+          [attr.aria-label]="lang.t('onboard.business_type')"
+          required
+          #businessType="ngModel"
+          class="w-full" />
+        @if (businessType.invalid && businessType.touched) {
+          <span class="field-error">{{ lang.t('onboard.error.business_type_required') }}</span>
+        }
+
+        @if (formData.business_type === 'other') {
+          <input
+            pInputText
+            id="bizBusinessTypeOther" name="businessTypeOther"
+            type="text"
+            [(ngModel)]="formData.business_type_other"
+            [placeholder]="lang.t('onboard.business_type.other_placeholder')"
+            [attr.aria-label]="lang.t('onboard.business_type.other_placeholder')"
+            required
+            #businessTypeOther="ngModel"
+            class="w-full" />
+          @if (businessTypeOther.invalid && businessTypeOther.touched) {
+            <span class="field-error">{{ lang.t('onboard.error.business_type_other_required') }}</span>
+          }
+        }
+      </div>
+
+      <div class="field">
+        <p-inputnumber
+          [inputId]="'bizProfessionals'" name="professionalCount"
+          [(ngModel)]="formData.professional_count"
+          [placeholder]="lang.t('onboard.professionals_short')"
+          [attr.aria-label]="lang.t('onboard.professionals_short')"
+          [min]="1"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="0"
+          required
+          #professionalCount="ngModel"
+          class="w-full" />
+        @if (professionalCount.touched && (professionalCount.invalid || !isProfessionalCountValid())) {
+          <span class="field-error">
+            @if (professionalCount.errors?.['required']) {
+              {{ lang.t('onboard.error.professionals_required') }}
+            } @else {
+              {{ lang.t('onboard.error.professionals_min') }}
+            }
+          </span>
+        }
       </div>
 
       <p-button
@@ -114,5 +177,10 @@
         [loading]="loading()"
         [disabled]="onboardForm.invalid" />
     </form>
+
+    <p class="terms-line">
+      {{ lang.t('onboard.terms.prefix') }}
+      <a class="terms-line__link" href="/terms" target="_blank" rel="noopener">{{ lang.t('onboard.terms.link') }}</a>
+    </p>
   </div>
 </div>

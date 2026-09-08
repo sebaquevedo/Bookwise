@@ -62,6 +62,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/packs/packs-list.component').then(m => m.PacksListComponent)
       },
       {
+        path: 'facturacion',
+        loadComponent: () => import('./features/admin/billing/billing.component').then(m => m.BillingComponent)
+      },
+      {
         path: 'profile',
         loadComponent: () => import('./features/admin/profile/profile.component').then(m => m.ProfileComponent)
       },
@@ -109,6 +113,10 @@ export const routes: Routes = [
         loadComponent: () => import('@shared/components/configuraciones/configuraciones.component').then(m => m.ConfiguracionesComponent)
       }
     ]
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./features/legal/terms/terms.component').then(m => m.TermsComponent)
   },
   {
     path: '**',

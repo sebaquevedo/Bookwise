@@ -1,27 +1,28 @@
 .onboard-wrap {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
   min-height: 100vh;
-  padding: 2.5rem 1.25rem;
+  padding: 1.5rem;
   background: var(--bw-50, #f8fafc);
+  overflow-y: auto; /* si el card excede viewports muy bajos → scroll, sin cortar arriba */
 }
 
 .onboard-card {
+  margin: auto; /* centrado en X e Y; con overflow el card sigue scrolleable desde arriba */
   width: 100%;
-  max-width: 28rem;
+  max-width: 26rem;
   background: #fff;
   border: 1px solid var(--bw-100, #e2e8f0);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.5rem;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
 }
 
 .form-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--bw-900);
     margin: 0 0 0.25rem;
@@ -30,7 +31,7 @@
 
   p {
     color: #6b7280;
-    font-size: 0.9rem;
+    font-size: 0.8125rem;
     margin: 0;
   }
 }
@@ -38,13 +39,29 @@
 .onboard-form {
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 0.75rem;
+}
+
+/* name + rut en una fila de 2 columnas solo cuando hay ancho (>= 480px);
+   ahorra ~1 fila de alto y deja que el form quepa en ~650-768px de viewport. */
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 
   label {
     font-size: 0.875rem;
@@ -54,10 +71,28 @@
 }
 
 .field-error {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: #dc2626;
 }
 
 .w-full {
   width: 100%;
+}
+
+.terms-line {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+
+  &__link {
+    font-weight: 600;
+    color: #046af4;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }

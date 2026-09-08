@@ -78,6 +78,72 @@ describe('OnboardingComponent', () => {
     expect(businessesApi.createBusiness).not.toHaveBeenCalled();
   });
 
+  it('does not POST when business_type is "other" without a description', () => {
+    component.formData = {
+      name: 'Kinesilk Centro',
+      rut: '11111111-1',
+      email: 'negocio@test.com',
+      address: 'Av. Providencia 123',
+      phone: '+56912345678',
+      plan: 'starter',
+      professional_count: 2,
+      business_type: 'other',
+      business_type_other: '   ',
+    };
+    fixture.detectChanges();
+
+    const formEl = fixture.nativeElement.querySelector('form');
+    formEl.dispatchEvent(new Event('submit'));
+
+    expect(businessesApi.createBusiness).not.toHaveBeenCalled();
+  });
+
+  it('does not POST when professional_count is 0 (must be an integer >= 1)', () => {
+    component.formData = {
+      name: 'Kinesilk Centro',
+      rut: '11111111-1',
+      email: 'negocio@test.com',
+      address: 'Av. Providencia 123',
+      phone: '+56912345678',
+      plan: 'starter',
+      professional_count: 0,
+      business_type: 'centro-estetica',
+      business_type_other: null,
+    };
+    fixture.detectChanges();
+
+    const formEl = fixture.nativeElement.querySelector('form');
+    formEl.dispatchEvent(new Event('submit'));
+
+    expect(businessesApi.createBusiness).not.toHaveBeenCalled();
+  });
+
+  it('POSTs with business_type "other" sending the trimmed description', () => {
+    businessesApi.createBusiness.mockReturnValue(of({ data: business, message: 'ok' }));
+    auth.loadMe.mockReturnValue(of(meData(business)));
+
+    component.formData = {
+      name: 'Kinesilk Centro',
+      rut: '11111111-1',
+      email: 'negocio@test.com',
+      address: 'Av. Providencia 123',
+      phone: '+56912345678',
+      plan: 'starter',
+      professional_count: 1,
+      business_type: 'other',
+      business_type_other: '  Yoga y pilates  ',
+    };
+    fixture.detectChanges();
+
+    const formEl = fixture.nativeElement.querySelector('form');
+    formEl.dispatchEvent(new Event('submit'));
+
+    expect(businessesApi.createBusiness).toHaveBeenCalledWith(
+      expect.objectContaining({ business_type: 'other', business_type_other: 'Yoga y pilates' }),
+    );
+    expect(router.navigate).toHaveBeenCalledWith(['/admin']);
+  });
+
   it('POSTs, refreshes /auth/me and navigates to /admin when the form is valid', () => {
     // Respuesta plana del backend: { data: Business } — sin `user` ni { business } anidado.
     businessesApi.createBusiness.mockReturnValue(of({ data: business, message: 'ok' }));
@@ -90,6 +156,9 @@ describe('OnboardingComponent', () => {
       address: 'Av. Providencia 123',
       phone: '+56912345678',
       plan: 'starter',
+      professional_count: 3,
+      business_type: 'centro-estetica',
+      business_type_other: null,
     };
     fixture.detectChanges();
 
@@ -114,6 +183,9 @@ describe('OnboardingComponent', () => {
       address: 'Av. Providencia 123',
       phone: '+56912345678',
       plan: 'starter',
+      professional_count: 3,
+      business_type: 'centro-estetica',
+      business_type_other: null,
     };
     fixture.detectChanges();
 

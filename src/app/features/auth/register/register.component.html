@@ -1,7 +1,7 @@
 <bw-auth-layout>
   <div class="form-header">
     <h2>Crear cuenta</h2>
-    <p>Completá tus datos para comenzar</p>
+    <p>Completa tus datos para comenzar</p>
   </div>
 
   <form class="auth-form" (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
@@ -67,7 +67,7 @@
         [(ngModel)]="formData.password"
         [toggleMask]="true"
         [feedback]="true"
-        promptLabel="Ingresá una contraseña"
+        promptLabel="Ingresa una contraseña"
         weakLabel="Débil"
         mediumLabel="Media"
         strongLabel="Fuerte"
@@ -93,7 +93,7 @@
       <label for="passwordConfirm">Confirmar contraseña</label>
       <p-password
         inputId="passwordConfirm" name="passwordConfirm"
-        placeholder="Repetí tu contraseña"
+        placeholder="Repite tu contraseña"
         [(ngModel)]="formData.password_confirmation"
         [feedback]="false"
         [toggleMask]="true"
@@ -132,8 +132,13 @@
       [disabled]="registerForm.invalid || !passwordStrong() || formData.password !== formData.password_confirmation" />
   </form>
 
+  <p class="auth-terms">
+    Al crear tu cuenta, aceptas nuestros
+    <a class="auth-terms__link" href="/terms" target="_blank" rel="noopener">términos y condiciones</a>
+  </p>
+
   <div class="auth-footer">
-    <span>¿Ya tenés cuenta?</span>
-    <a routerLink="/login">Iniciar sesión</a>
+    <span>¿Ya tienes una cuenta?</span>
+    <a routerLink="/login">Inicia sesión aquí</a>
   </div>
 </bw-auth-layout>

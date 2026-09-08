@@ -1,0 +1,436 @@
+// ── Página de Facturación ─────────────────────────────────────────────────────
+
+.billing {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0.25rem 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// ── Encabezado de página ─────────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+.page-title {
+  margin: 0;
+  color: var(--text-heading, #333);
+  font-size: var(--bw-font-h2, 1.5rem);
+  font-weight: var(--bw-weight-bold, 700);
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--text-color-secondary, #888);
+  font-size: var(--bw-font-caption, 0.9rem);
+}
+
+// ── Card "Plan actual" ───────────────────────────────────────────────────────
+
+:host ::ng-deep .plan-card .p-card-body {
+  padding: 1.75rem;
+}
+
+.plan {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: var(--bw-font-title, 1.25rem);
+    font-weight: var(--bw-weight-semibold, 600);
+    color: var(--text-heading, #333);
+  }
+
+  &__meta {
+    margin: 0;
+    color: var(--text-color-secondary, #888);
+    font-size: 0.875rem;
+  }
+
+  &__payment {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color, #333);
+    font-size: 0.9rem;
+  }
+
+  &__payment-icon {
+    color: var(--bw-300, #046af4);
+  }
+
+  &__payment-sep {
+    color: var(--text-color-secondary, #888);
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__price-value {
+    font-size: 2rem;
+    font-weight: var(--bw-weight-bold, 700);
+    color: var(--text-heading, #333);
+    white-space: nowrap;
+  }
+
+  &__price-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  // Franja inferior del período
+  &__period {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--surface-border, #e2e8f0);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__period-text {
+    color: var(--text-color, #333);
+    font-size: 0.875rem;
+    font-weight: var(--bw-weight-medium, 500);
+  }
+
+  &__days-left {
+    color: var(--text-color-secondary, #888);
+    font-size: 0.875rem;
+    margin-left: auto;
+  }
+
+  &__progress {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
+// ── Secciones ────────────────────────────────────────────────────────────────
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    &--stack {
+      align-items: flex-start;
+    }
+  }
+
+  &__head-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--text-heading, #333);
+    font-size: var(--bw-font-title, 1.25rem);
+    font-weight: var(--bw-weight-semibold, 600);
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: var(--text-color-secondary, #888);
+    font-size: 0.85rem;
+  }
+
+  &__muted {
+    color: var(--text-color-secondary, #888);
+    font-size: 0.8rem;
+  }
+}
+
+// ── Uso del plan ─────────────────────────────────────────────────────────────
+
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+:host ::ng-deep .usage-card .p-card-body {
+  padding: 1.25rem;
+}
+
+.usage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--bw-radius-lg, 8px);
+    background: color-mix(in srgb, var(--bw-300, #046af4) 12%, transparent);
+    color: var(--bw-300, #046af4);
+    flex-shrink: 0;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  &__title {
+    font-size: 0.95rem;
+    font-weight: var(--bw-weight-medium, 500);
+    color: var(--text-color, #333);
+  }
+
+  &__count {
+    font-size: 1.5rem;
+    font-weight: var(--bw-weight-bold, 700);
+    color: var(--text-heading, #333);
+    line-height: 1.1;
+  }
+
+  &__pct {
+    align-self: flex-start;
+  }
+
+  &__hint {
+    margin: 0;
+    color: var(--text-color-secondary, #888);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+}
+
+:host ::ng-deep .usage-card .p-progressbar,
+:host ::ng-deep .plan-card .p-progressbar {
+  height: 8px;
+  background: var(--surface-100, #f1f5f9);
+  border: none;
+
+  .p-progressbar-value {
+    transition: width 0.3s ease;
+  }
+}
+
+// ── Consumo mensual + Detalles del plan ─────────────────────────────────────
+
+.consume-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+:host ::ng-deep .consume-card .p-card-body {
+  padding: 1.5rem;
+}
+
+.consume-chart {
+  position: relative;
+  height: 24rem;
+  min-width: 0;
+
+  // El canvas de p-chart llena el contenedor (height:100% no aplica directo)
+  canvas {
+    max-height: 100%;
+  }
+}
+
+:host ::ng-deep .details-card .p-card-body {
+  padding: 1.5rem;
+}
+
+.features {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    color: var(--text-color, #333);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  &__icon {
+    color: var(--bw-success, #22c55e);
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+}
+
+// ── Historial de facturación ─────────────────────────────────────────────────
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--bw-radius-lg, 8px);
+  border: 1px solid var(--surface-border, #e2e8f0);
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 640px;
+
+  th {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    background: var(--surface-100, #f1f5f9);
+    color: var(--text-color-secondary, #888);
+    font-weight: var(--bw-weight-semibold, 600);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  td {
+    padding: 0.875rem 1rem;
+    border-top: 1px solid var(--surface-border, #e2e8f0);
+    color: var(--text-color, #333);
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--bw-300, #046af4) 4%, transparent);
+    }
+  }
+
+  &__id {
+    font-weight: var(--bw-weight-medium, 500);
+    white-space: nowrap;
+  }
+
+  &__amount {
+    font-weight: var(--bw-weight-medium, 500);
+    white-space: nowrap;
+  }
+
+  &__action-col {
+    text-align: right;
+  }
+
+  &__action {
+    text-align: right;
+  }
+}
+
+.invoice-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--surface-border, #e2e8f0);
+  border-radius: var(--bw-radius-md, 6px);
+  background: var(--surface-0, #fff);
+  color: var(--text-color-secondary, #888);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--surface-100, #f1f5f9);
+    color: var(--bw-300, #046af4);
+  }
+}
+
+// ── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 992px) {
+  .usage-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .consume-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .plan__price {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .plan__price-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .billing {
+    padding: 0 0 1rem;
+    gap: 1.5rem;
+  }
+
+  :host ::ng-deep .plan-card .p-card-body {
+    padding: 1.25rem;
+  }
+
+  .plan__price-value {
+    font-size: 1.5rem;
+  }
+
+  .consume-chart {
+    height: 18rem;
+  }
+}

@@ -281,6 +281,12 @@ export interface Business {
   address: string;
   phone?: string | null;
   plan: BusinessPlan;
+  /** Cantidad de profesionales que atienden (onboarding). */
+  professional_count?: number | null;
+  /** Slug del tipo de negocio (catálogo: centro-estetica, spa, ..., yoga-studio, other). */
+  business_type?: string | null;
+  /** Texto libre cuando business_type === 'other'. */
+  business_type_other?: string | null;
   logo_url?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -326,6 +332,12 @@ export interface CreateBusinessData {
   plan: BusinessPlan;
   /** Logo opcional del negocio (aparece en recibos/email). */
   logo?: File | null;
+  /** Cantidad de profesionales que atienden (onboarding). */
+  professional_count?: number | null;
+  /** Slug del tipo de negocio (catálogo: centro-estetica, spa, ..., yoga-studio, other). */
+  business_type?: string | null;
+  /** Texto libre cuando business_type === 'other'. */
+  business_type_other?: string | null;
 }
 
 /** POST /businesses → 200 (completa el tenant pending) o 201 (crea tenant nuevo)

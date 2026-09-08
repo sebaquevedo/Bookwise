@@ -1,0 +1,161 @@
+<div class="billing">
+  <!-- Encabezado de página -->
+  <div class="page-header">
+    <div class="page-header__text">
+      <h1 class="page-title">{{ lang.t('billing.title') }}</h1>
+      <p class="page-subtitle">{{ lang.t('billing.subtitle') }}</p>
+    </div>
+    <p-button
+      label="{{ lang.t('billing.invoices_button') }}"
+      icon="pi pi-file"
+      severity="secondary"
+      (onClick)="scrollToHistory()" />
+  </div>
+
+  <!-- Plan actual -->
+  <p-card class="plan-card" [header]="lang.t('billing.current_plan')">
+    <ng-template pTemplate="body">
+      <div class="plan">
+        <div class="plan__info">
+          <div class="plan__heading">
+            <h2 class="plan__name">{{ planName }}</h2>
+            <span class="bw-chip bw-chip--success"><i class="pi pi-check-circle"></i> {{ lang.t('billing.active') }}</span>
+          </div>
+          <p class="plan__meta">
+            {{ lang.t('billing.account_number', { id: accountId }) }} · {{ lang.t('billing.autorenew', { date: renewalDate }) }}
+          </p>
+          <div class="plan__payment">
+            <i class="pi pi-credit-card plan__payment-icon"></i>
+            <span>{{ cardBrand }} ···· {{ cardLast4 }}</span>
+            <span class="plan__payment-sep">·</span>
+            <span>{{ lang.t('billing.monthly_billing') }}</span>
+          </div>
+        </div>
+        <div class="plan__price">
+          <div class="plan__price-value">{{ planPriceLabel }}</div>
+          <div class="plan__price-actions">
+            <p-button label="{{ lang.t('billing.change_plan') }}" severity="secondary" [outlined]="true" />
+            <p-button label="{{ lang.t('billing.manage_subscription') }}" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Franja inferior del período -->
+      <div class="plan__period">
+        <span class="plan__period-text">{{ lang.t('billing.current_period', { start: periodStart, end: periodEnd }) }}</span>
+        <span class="plan__days-left">{{ lang.t('billing.days_left', { n: daysLeft }) }}</span>
+        <p-progressBar [value]="periodProgress" [showValue]="false" styleClass="plan__progress" />
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Uso del plan -->
+  <div class="section">
+    <div class="section__head">
+      <h2 class="section__title">{{ lang.t('billing.usage_title') }}</h2>
+      <span class="section__muted">{{ lang.t('billing.updated_recent') }}</span>
+    </div>
+
+    <div class="usage-grid">
+      @for (metric of usageMetrics; track metric.key) {
+        <p-card class="usage-card">
+          <ng-template pTemplate="body">
+            <div class="usage">
+              <div class="usage__head">
+                <span class="usage__icon"><i class="pi" [ngClass]="metric.icon"></i></span>
+                <span class="usage__title">{{ lang.t('billing.usage.' + metric.key) }}</span>
+              </div>
+
+              <div class="usage__count">{{ lang.t('billing.usage.allowed', { used: metric.usedLabel, limit: metric.limitLabel }) }}</div>
+              <span class="bw-chip usage__pct" [class]="usageChipClass(metric)">{{ pctOf(metric) }}%</span>
+
+              <p-progressBar
+                [value]="pctOf(metric)"
+                [showValue]="false"
+                [color]="statusColor(metric)" />
+
+              <p class="usage__hint">{{ usageHint(metric) }}</p>
+            </div>
+          </ng-template>
+        </p-card>
+      }
+    </div>
+  </div>
+
+  <!-- Consumo mensual + Detalles del plan -->
+  <div class="section">
+    <div class="section__head">
+      <h2 class="section__title">{{ lang.t('billing.consumption_title') }}</h2>
+    </div>
+
+    <div class="consume-grid">
+      <p-card class="consume-card">
+        <ng-template pTemplate="body">
+          <div class="consume-chart">
+            <p-chart type="line" [data]="consumptionData()" [options]="lineOptions" />
+          </div>
+        </ng-template>
+      </p-card>
+
+      <p-card class="details-card" [header]="lang.t('billing.details_title')">
+        <ng-template pTemplate="body">
+          <ul class="features">
+            @for (feature of planFeatures; track feature) {
+              <li class="features__item">
+                <i class="pi pi-check-circle features__icon"></i>
+                <span>{{ lang.t(feature) }}</span>
+              </li>
+            }
+          </ul>
+          <p-button
+            label="{{ lang.t('billing.see_all_plans') }}"
+            severity="secondary"
+            [outlined]="true"
+            class="details-cta" />
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Historial de facturación -->
+  <div class="section" id="billing-history">
+    <div class="section__head section__head--stack">
+      <div class="section__head-text">
+        <h2 class="section__title">{{ lang.t('billing.history_title') }}</h2>
+        <p class="section__subtitle">{{ lang.t('billing.history.subtitle') }}</p>
+      </div>
+      <p-button label="{{ lang.t('billing.see_all') }}" severity="secondary" [text]="true" icon="pi pi-arrow-right" iconPos="right" />
+    </div>
+
+    <div class="table-wrap">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>{{ lang.t('billing.invoice') }}</th>
+            <th>{{ lang.t('billing.date') }}</th>
+            <th>{{ lang.t('billing.plan_col') }}</th>
+            <th>{{ lang.t('billing.amount') }}</th>
+            <th>{{ lang.t('billing.status') }}</th>
+            <th class="invoice-table__action-col">{{ lang.t('billing.action') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invoice of invoices; track invoice.id) {
+            <tr>
+              <td class="invoice-table__id">#{{ invoice.id }}</td>
+              <td>{{ invoice.date }}</td>
+              <td>{{ invoice.plan }}</td>
+              <td class="invoice-table__amount">{{ price(invoice.amount) }}</td>
+              <td><span class="bw-chip" [class]="statusChipClass(invoice.status)">{{ lang.t(statusKey(invoice.status)) }}</span></td>
+              <td class="invoice-table__action">
+                <button type="button" class="invoice-download" [attr.aria-label]="lang.t('billing.action')">
+                  <i class="pi pi-download"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
